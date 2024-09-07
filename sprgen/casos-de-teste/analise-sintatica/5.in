@@ -1,0 +1,18 @@
+// Deve gerar erro pois o tipo do atributo não foi informado
+entidades = [
+    Pessoa = {
+        nome: String
+        email:
+        idade: Long
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{nome}"
+        POST "/pessoa/{nome}"
+        PUT "/pessoa/{nome}"
+        DELETE "/pessoa/{nome}"
+    }
+]

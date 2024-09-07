@@ -106,10 +106,9 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
             }
             endpoints.put(id, endpoint);
             return super.visitEndpoint(ctx);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("Erro na validação de chaves do path variable");
-            erroValidacaoChaves(ctx.getStart());
+            erroValidacaoChaves();
             return null;
         }
     }
@@ -146,8 +145,8 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
         ValidateErrorHelper.addErroSemantico(token, String.format("método %s não deveria conter um identificador", metodoHttp));
     }
 
-    public void erroValidacaoChaves(Token token) {
-        ValidateErrorHelper.addErroSemantico(token, "fechamento das chaves ( } ) necessário");
+    public void erroValidacaoChaves() {
+        ValidateErrorHelper.addErroChaves("fechamento das chaves ( } ) necessário");
     }
 
 

@@ -1,0 +1,18 @@
+// Deve gerar erro pois o método PUT precisa de um identificador na URL
+entidades = [
+    Pessoa = {
+        nome: String
+        email: String
+        idade: Long
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{nome}"
+        POST "/pessoa"
+        PUT "/pessoa"
+        DELETE "/pessoa/{nome}"
+    }
+]

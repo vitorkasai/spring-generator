@@ -1,0 +1,28 @@
+// Deve retornar erro de endpoint já declarado anteriormente no programa
+entidades = [
+    Pessoa = {
+        nome: String
+        cpf: String
+        email: String
+        idade: Long
+    }
+    Carro = {
+        modelo: String
+        placa: String
+        ano: Long
+        cpfDono: String
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{cpf}"
+        POST "/pessoa"
+        PUT "/pessoa/{cpf}"
+        DELETE "/pessoa/{cpf}"
+    }
+    Pessoa = {
+        GET "/pessoa/{cpf}"
+    }
+]

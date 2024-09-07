@@ -41,7 +41,7 @@ public class ValidateErrorHelper {
     public static String stringifySyntaxError(int line, Token token) {
         StringBuilder tokenStringBuilder = new StringBuilder();
         tokenStringBuilder.append("Linha ");
-        tokenStringBuilder.append(line);
+        tokenStringBuilder.append(line - 1);
         tokenStringBuilder.append(": erro próximo a ");
         if (token.getType() == SPRGENLexer.EOF) {
             tokenStringBuilder.append("EOF");
@@ -52,12 +52,17 @@ public class ValidateErrorHelper {
     }
 
     // Recebe o token e a mensagem do erro, e adiciona na lista de erros
-    public static void addErroSemantico(Token tk, String msg) {
-        errosSemanticos.add(String.format("Linha %d: %s", tk.getLine(), msg));
+    public static void addErroSemantico(Token token, String msg) {
+        errosSemanticos.add(String.format("Linha %d: %s", token.getLine(), msg));
     }
 
-    public static void addErroSintatico(Token tk, String msg) {
-        errosSintaticos.add(String.format("Linha %d: %s", tk.getLine(), msg));
+    // Recebe o token e a mensagem do erro, e adiciona na lista de erros
+    public static void addErroChaves(String msg) {
+        errosSemanticos.add(msg);
+    }
+
+    public static void addErroSintatico(Token token, String msg) {
+        errosSintaticos.add(String.format("Linha %d: %s", token.getLine(), msg));
     }
 
 }

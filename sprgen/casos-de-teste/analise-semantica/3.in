@@ -1,0 +1,29 @@
+// Deve retornar erro de atributo de entidade já declarado
+entidades = [
+    Pessoa = {
+        nome: String
+        cpf: String
+        email: String
+        email: String
+        idade: Long
+    }
+    Carro = {
+        modelo: String
+        placa: String
+        ano: Long
+        cpfDono: String
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{cpf}"
+        POST "/pessoa"
+        PUT "/pessoa/{cpf}"
+        DELETE "/pessoa/{cpf}"
+    }
+    Carro = {
+        GET "/carro/{cpfDono}"
+    }
+]

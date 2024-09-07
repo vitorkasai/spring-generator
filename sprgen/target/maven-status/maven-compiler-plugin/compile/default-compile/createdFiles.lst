@@ -1,0 +1,8 @@
+br/ufscar/dc/compiladores/sprgen/SPRGENVisitor.class
+br/ufscar/dc/compiladores/sprgen/SPRGENParser.class
+br/ufscar/dc/compiladores/sprgen/SPRGENBaseListener.class
+br/ufscar/dc/compiladores/sprgen/SPRGENBaseVisitor.class
+br/ufscar/dc/compiladores/sprgen/SPRGENParser$ProgramContext.class
+br/ufscar/dc/compiladores/sprgen/SPRGENLexer.class
+br/ufscar/dc/compiladores/sprgen/Principal.class
+br/ufscar/dc/compiladores/sprgen/SPRGENListener.class

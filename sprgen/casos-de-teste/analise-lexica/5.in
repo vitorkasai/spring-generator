@@ -1,0 +1,21 @@
+// Deve gerar erro por conta da definição inválida de simbolo
+
+#DEFINE ENTIDADES
+entidades = [
+    Pessoa = {
+        nome: String
+        email: String
+        idade: Long
+        //idade @#!
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{nome}"
+        POST "/pessoa"
+        PUT "/pessoa/{nome}"
+        DELETE "/pessoa/{nome}"
+    }
+]

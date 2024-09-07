@@ -1,0 +1,19 @@
+// Deve ignorar o comentário e seguir a compilação com sucesso
+entidades = [
+    Pessoa = {
+        nome: String
+        email: String
+        idade: Long
+        //idade @#!
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{nome}"
+        POST "/pessoa"
+        PUT "/pessoa/{nome}"
+        DELETE "/pessoa/{nome}"
+    }
+]

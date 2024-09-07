@@ -83,15 +83,17 @@ public class SimpleApiApplication {
         }
 
         @PutMapping("/{id}")
-        public ResponseEntity<Entity> updateEntity(@PathVariable Long id, @RequestBody Entity entity) {
+        public ResponseEntity<Entity> updateEntity(@PathVariable Long id, @RequestBody Entity newEntity) {
             return entityRepository.findById(id)
                     .map(existingEntity -> {
-                        existingEntity.setName(entity.getName());
-                        entityRepository.save(existingEntity);
-                        return new ResponseEntity<>(existingEntity, HttpStatus.OK);
+                        // Sobrescreve a entidade inteira, mantendo o id original
+                        newEntity.setId(existingEntity.getId());
+                        entityRepository.save(newEntity);
+                        return new ResponseEntity<>(newEntity, HttpStatus.OK);
                     })
                     .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
+
 
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteEntity(@PathVariable Long id) {

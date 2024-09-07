@@ -1,0 +1,18 @@
+// Deve gerar erro identificador inválido (não pode iniciar com número)
+entidades = [
+    Pessoa = {
+        1nome: String
+        email: String
+        idade: Long
+    }
+]
+
+2endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{nome}"
+        POST "/pessoa"
+        PUT "/pessoa/{nome}"
+        DELETE "/pessoa/{nome}"
+    }
+]

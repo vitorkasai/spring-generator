@@ -11,9 +11,51 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface SPRGENVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link SPRGENParser#program}.
+	 * Visit a parse tree produced by {@link SPRGENParser#programa}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProgram(SPRGENParser.ProgramContext ctx);
+	T visitPrograma(SPRGENParser.ProgramaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SPRGENParser#entidades}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEntidades(SPRGENParser.EntidadesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SPRGENParser#entidade}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEntidade(SPRGENParser.EntidadeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SPRGENParser#campo}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCampo(SPRGENParser.CampoContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SPRGENParser#endpoints}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndpoints(SPRGENParser.EndpointsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SPRGENParser#endpoint}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndpoint(SPRGENParser.EndpointContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SPRGENParser#rota}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRota(SPRGENParser.RotaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SPRGENParser#metodoHttp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMetodoHttp(SPRGENParser.MetodoHttpContext ctx);
 }

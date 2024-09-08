@@ -1,0 +1,19 @@
+// Deve gerar erro pela falta de fechamento da chaves na passagem de parametro na url " } "
+entidades = [
+    Pessoa = {
+        id: Long
+        nome: String
+        email: String
+        idade: Long
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{id}"
+        POST "/pessoa"
+        PUT "/pessoa/id}"
+        DELETE "/pessoa/{id}"
+    }
+]

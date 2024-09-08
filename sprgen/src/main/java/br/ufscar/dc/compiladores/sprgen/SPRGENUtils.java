@@ -1,5 +1,7 @@
 package br.ufscar.dc.compiladores.sprgen;
 
+import com.ibm.icu.impl.IllegalIcuArgumentException;
+
 public class SPRGENUtils {
 
     // Recebe uma cadeia e mapeia para o tipo adequado
@@ -38,18 +40,22 @@ public class SPRGENUtils {
             String secondHalf = url.split("\\{")[1];  // escape para o '{'
             if (!secondHalf.contains("/")) {
                 if (!secondHalf.contains("}")) {
-                    throw new IllegalArgumentException("Fechamento de chaves necessária para passagem de parâmetro no url da rota");
+                    throw new IllegalArgumentException("Fechamento de chaves ( } ) necessário.");
                 }
                 return secondHalf.substring(0, secondHalf.length() - 2);
             }
             else {
                 String aux = secondHalf.split("/")[0];
                 if (!aux.contains("}")) {
-                    throw new IllegalArgumentException("Fechamento de chaves necessária para passagem de parâmetro no url da rota");
+                    throw new IllegalArgumentException("Fechamento de chaves ( } ) necessário.");
                 }
                 return aux.substring(0, aux.length() - 2);
             }
 
+        } else {
+            if (url.contains("}")) {
+                throw new IllegalArgumentException("Abertura de chaves ( { ) necessária.");
+            }
         }
         return null;
     }

@@ -3,6 +3,7 @@
 #DEFINE ENTIDADES
 entidades = [
     Pessoa = {
+        id: Long
         nome: String
         email: String
         idade: Long
@@ -13,9 +14,9 @@ entidades = [
 endpoints = [
     Pessoa = {
         GET "/pessoa"
-        GET "/pessoa/{nome}"
+        GET "/pessoa/{id}"
         POST "/pessoa"
-        PUT "/pessoa/{nome}"
-        DELETE "/pessoa/{nome}"
+        PUT "/pessoa/{id}"
+        DELETE "/pessoa/{id}"
     }
 ]

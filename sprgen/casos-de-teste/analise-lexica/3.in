@@ -1,6 +1,7 @@
 // Deve gerar erro identificador inválido (não pode iniciar com número)
 entidades = [
     Pessoa = {
+        id: Long
         1nome: String
         email: String
         idade: Long
@@ -10,9 +11,9 @@ entidades = [
 2endpoints = [
     Pessoa = {
         GET "/pessoa"
-        GET "/pessoa/{nome}"
+        GET "/pessoa/{id}"
         POST "/pessoa"
-        PUT "/pessoa/{nome}"
-        DELETE "/pessoa/{nome}"
+        PUT "/pessoa/{id}"
+        DELETE "/pessoa/{id}"
     }
 ]

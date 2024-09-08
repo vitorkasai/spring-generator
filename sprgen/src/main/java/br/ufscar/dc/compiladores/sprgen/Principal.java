@@ -74,6 +74,7 @@ public class Principal {
 
                 // Verificar se o código gerado não está vazio
                 String codigoGerado = sprgenGenerator.codigoGerado.toString();
+                
                 if (codigoGerado.isEmpty()) {
                     System.out.println("Erro: O código gerado está vazio.");
                 } else {
@@ -82,13 +83,11 @@ public class Principal {
                     writer.println(codigoGerado);
 
                     Path outputOutPath = inputPath.resolveSibling(outputFileName);
-                    if (outputOutPath.toString().contains("analise-gerador")) {
-                        PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
-                        writerOutFile.println(codigoGerado);
-                        writerOutFile.close();
-                    }
+                    PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
+                    writerOutFile.println(codigoGerado);
+                    writerOutFile.close();
                                         
-                    System.out.println("Código Java gerado com sucesso.");
+                    //System.out.println("Código Java gerado com sucesso.");
 
                     writer.close();
                    

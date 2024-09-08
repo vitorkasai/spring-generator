@@ -72,6 +72,8 @@ endpoints = [
 7. Um servidor backend no localhost:8080 deverá iniciar contendo os endpoints da Entidade que foram definidos no arquivo de entrada.
 8. Em casos de erro de compilação, uma mensagem será devolvida no console, e o arquivo gerado no mesmo diretório do arquivo de entrada, conterá a mensagem e descrição erro, assim como sua classificação.
 
+Obs: o Bundle contém a estrutura necessária para execução de um projeto java spring com maven.
+
 ### Melhorias Sugeridas para o Projeto (To-Do)
 Durante o desenvolvimento deste projeto, foram identificadas várias oportunidades de melhoria. 
 

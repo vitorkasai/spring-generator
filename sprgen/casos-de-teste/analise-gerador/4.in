@@ -1,0 +1,49 @@
+// Deve obter sucesso na compilação e gerar o código em java
+entidades = [
+    Pessoa = {
+        id: Long
+        nome: String
+        cpf: String
+        email: String
+        idade: Long
+    }
+    Carro = {
+        id: Long
+        modelo: String
+        placa: String
+        ano: Long
+        cpfDono: String
+    }
+    Endereco = {
+        id: Long
+        rua: String
+        bairro: String
+        complemento: String
+        numero: Long
+        isResidencial: boolean
+    }
+]
+
+endpoints = [
+    Pessoa = {
+        GET "/pessoa"
+        GET "/pessoa/{id}"
+        POST "/pessoa"
+        PUT "/pessoa/{id}"
+        DELETE "/pessoa/{id}"
+    }
+    Carro = {
+        GET "/carro"
+        GET "/carro/{id}"
+        POST "/carro"
+        PUT "/carro/{id}"
+        DELETE "/carro/{id}"
+    }
+    Endereco = {
+        GET "/endereco"
+        GET "/endereco/{id}"
+        POST "/endereco"
+        PUT "/endereco/{id}"
+        DELETE "/endereco/{id}"
+    }
+]

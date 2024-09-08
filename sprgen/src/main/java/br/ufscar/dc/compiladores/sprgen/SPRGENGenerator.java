@@ -11,7 +11,6 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
 
     @Override
     public Void visitPrograma(SPRGENParser.ProgramaContext ctx) {
-        System.out.println("ENTROU");
         entidades = new HashMap<>();
         endpoints = new HashMap<>();
         codigoGerado = new StringBuilder();
@@ -61,7 +60,6 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("    @NoArgsConstructor\n");
         codigoGerado.append("    @AllArgsConstructor\n");
         codigoGerado.append("    static class ").append(id).append(" {\n");
-        codigoGerado.append("        private Long id;\n");
         for (Campo campo : entidade.campos) {
             codigoGerado.append("        private ").append(campo.tipo.getValue()).append(" ").append(campo.nome()).append(";\n");
         }
@@ -70,19 +68,19 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("    }\n\n");
 
         codigoGerado.append("    @Repository\n");
-        codigoGerado.append("    static class " + id + "Repository {\n");
-        codigoGerado.append("        private final Map<Long, " + id + "> entidades = new HashMap<>();\n");
+        codigoGerado.append("    static class ").append(id).append("Repository {\n");
+        codigoGerado.append("        private final Map<Long, ").append(id).append("> entidades = new HashMap<>();\n");
         codigoGerado.append("        private Long idContador = 1L;\n\n");
 
-        codigoGerado.append("        public List<" + id + "> findAll() {\n");
+        codigoGerado.append("        public List<").append(id).append("> findAll() {\n");
         codigoGerado.append("            return new ArrayList<>(entidades.values());\n");
         codigoGerado.append("        }\n\n");
 
-        codigoGerado.append("        public Optional<" + id + "> findById(Long id) {\n");
+        codigoGerado.append("        public Optional<").append(id).append("> findById(Long id) {\n");
         codigoGerado.append("            return Optional.ofNullable(entidades.get(id));\n");
         codigoGerado.append("        }\n\n");
 
-        codigoGerado.append("        public " + id + " save(" + id + " entidade) {\n");
+        codigoGerado.append("        public ").append(id).append(" save(").append(id).append(" entidade) {\n");
         codigoGerado.append("            if (entidade.getId() == null) {\n");
         codigoGerado.append("                entidade.setId(idContador++);\n");
         codigoGerado.append("            }\n");
@@ -110,14 +108,14 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
     @Override
     public Void visitEndpoint(SPRGENParser.EndpointContext ctx) {
         String id = ctx.IDENT().getText();
-        String repositoryInstance = id.toLowerCase() + "Repository";
+        String repositoryInstance = buildEntityRepositoryInstance(id);
 
         codigoGerado.append("    @RestController\n");
         codigoGerado.append("    @RequiredArgsConstructor\n");
-        codigoGerado.append("    @RequestMapping(\"/spr-generated-api/" + id.toLowerCase() + "\")\n");
-        codigoGerado.append("    static class " + id + "Controller {\n");
+        codigoGerado.append("    @RequestMapping(\"/spr-generated-api/").append(id.toLowerCase()).append("\")\n");
+        codigoGerado.append("    static class ").append(id).append("Controller {\n");
 
-        codigoGerado.append("        private final " + id + "Repository " + repositoryInstance +  ";\n\n");
+        codigoGerado.append("        private final ").append(id).append("Repository ").append(repositoryInstance).append(";\n\n");
 
         Endpoint endpoint = new Endpoint();
         for (SPRGENParser.RotaContext rota : ctx.rotas) {
@@ -161,56 +159,60 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
     }
 
     private void generateRotaGetAll(String id) {
-        String repositoryInstance = id.toLowerCase() + "Repository";
+        String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @GetMapping\n");
-        codigoGerado.append("        public List<" + id + "> getAll() {\n");
-        codigoGerado.append("            return " + repositoryInstance + ".findAll();\n");
+        codigoGerado.append("        public List<").append(id).append("> getAll() {\n");
+        codigoGerado.append("            return ").append(repositoryInstance).append(".findAll();\n");
         codigoGerado.append("        }\n\n");
     }
 
     private void generateRotaGetById(String id) {
-        String repositoryInstance = id.toLowerCase() + "Repository";
+        String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @GetMapping(\"/{id}\")\n");
-        codigoGerado.append("        public ResponseEntity<" + id + "> getById(@PathVariable Long id) {\n");
-        codigoGerado.append("            return " + repositoryInstance + ".findById(id)\n");
+        codigoGerado.append("        public ResponseEntity<").append(id).append("> getById(@PathVariable Long id) {\n");
+        codigoGerado.append("            return ").append(repositoryInstance).append(".findById(id)\n");
         codigoGerado.append("                    .map(ResponseEntity::ok)\n");
         codigoGerado.append("                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));\n");
         codigoGerado.append("        }\n\n");
     }
 
     private void generatePostCode(String id) {
-        String repositoryInstance = id.toLowerCase() + "Repository";
+        String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @PostMapping\n");
-        codigoGerado.append("        public " + id + " create(@RequestBody " + id + " " + id.toLowerCase() + ") {\n");
-        codigoGerado.append("        return " + repositoryInstance + ".save(" + id.toLowerCase() + ");\n");
+        codigoGerado.append("        public ").append(id).append(" create(@RequestBody ").append(id).append(" ").append(id.toLowerCase()).append(") {\n");
+        codigoGerado.append("        return ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append(");\n");
         codigoGerado.append("        }\n\n");
     }
 
     private void generatePutCode(String id) {
-        String repositoryInstance = id.toLowerCase() + "Repository";
+        String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @PutMapping(\"/{id}\")\n");
-        codigoGerado.append("        public ResponseEntity<" + id + "> update(@PathVariable Long id, @RequestBody " + id + " " + id.toLowerCase() + ") {\n");
-        codigoGerado.append("            return " + repositoryInstance + ".findById(id)\n");
+        codigoGerado.append("        public ResponseEntity<").append(id).append("> update(@PathVariable Long id, @RequestBody ").append(id).append(" ").append(id.toLowerCase()).append(") {\n");
+        codigoGerado.append("            return ").append(repositoryInstance).append(".findById(id)\n");
         codigoGerado.append("                    .map(e -> {\n");
-        codigoGerado.append("                        " + id.toLowerCase() + ".setId(e.getId());\n");
-        codigoGerado.append("                        " + id.toLowerCase() + ".setDataAlteracao(LocalDateTime.now());\n");
-        codigoGerado.append("                        " + repositoryInstance + ".save(" + id.toLowerCase() + ");\n");
-        codigoGerado.append("                        return new ResponseEntity<>(" + id.toLowerCase() + ", HttpStatus.OK);\n");
+        codigoGerado.append("                        ").append(id.toLowerCase()).append(".setId(e.getId());\n");
+        codigoGerado.append("                        ").append(id.toLowerCase()).append(".setDataAlteracao(LocalDateTime.now());\n");
+        codigoGerado.append("                        ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append(");\n");
+        codigoGerado.append("                        return new ResponseEntity<>(").append(id.toLowerCase()).append(", HttpStatus.OK);\n");
         codigoGerado.append("                    })\n");
         codigoGerado.append("                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));\n");
         codigoGerado.append("        }\n\n");
     }
 
     private void generateDeleteCode(String id) {
-        String repositoryInstance = id.toLowerCase() + "Repository";
+        String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @DeleteMapping(\"/{id}\")\n");
         codigoGerado.append("        public ResponseEntity<Void> deleteById(@PathVariable Long id) {\n");
-        codigoGerado.append("            if (" + repositoryInstance + ".findById(id).isPresent()) {\n");
-        codigoGerado.append("                " + repositoryInstance + ".deleteById(id);\n");
+        codigoGerado.append("            if (").append(repositoryInstance).append(".findById(id).isPresent()) {\n");
+        codigoGerado.append("                ").append(repositoryInstance).append(".deleteById(id);\n");
         codigoGerado.append("                return new ResponseEntity<>(HttpStatus.NO_CONTENT);\n");
         codigoGerado.append("            } else {\n");
         codigoGerado.append("                return new ResponseEntity<>(HttpStatus.NOT_FOUND);\n");
         codigoGerado.append("            }\n");
         codigoGerado.append("        }\n\n");
+    }
+
+    private String buildEntityRepositoryInstance(String id) {
+        return id.toLowerCase().concat("Repository");
     }
 }

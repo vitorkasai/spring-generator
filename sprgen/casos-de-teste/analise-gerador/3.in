@@ -1,0 +1,19 @@
+// Deve obter sucesso na compilação e gerar o código em java
+entidades = [
+    Aluno = {
+        id: Long
+        nome: String
+        ra: Long
+        aprovado: boolean
+    }
+]
+
+endpoints = [
+    Aluno = {
+        GET "/aluno"
+        GET "/aluno/{id}"
+        POST "/aluno"
+        PUT "/aluno/{id}"
+        DELETE "/aluno/{id}"
+    }
+]

@@ -1,6 +1,8 @@
-// Deve obter sucesso na compilação
+// Deve obter sucesso na compilação e gerar o código em java
+
 entidades = [
     Pessoa = {
+        id: Long
         nome: String
         email: String
         idade: Long
@@ -10,9 +12,9 @@ entidades = [
 endpoints = [
     Pessoa = {
         GET "/pessoa"
-        GET "/pessoa/{nome}"
+        GET "/pessoa/{id}"
         POST "/pessoa"
-        PUT "/pessoa/{nome}"
-        DELETE "/pessoa/{nome}"
+        PUT "/pessoa/{id}"
+        DELETE "/pessoa/{id}"
     }
 ]

@@ -37,7 +37,7 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
             if (entidade.contains(nomeCampo)) {
                 erroIdentJaDeclarado(nomeCampo, campo.ident); // Verifica se já existe atributo com o mesmo nome
             }
-            if (nomeCampo.equals("id") || nomeCampo.equals("dataCriacao") || nomeCampo.equals("dataAlteracao")) {
+            if (nomeCampo.equals("dataCriacao") || nomeCampo.equals("dataAlteracao")) {
                 erroNomeNaoPermitido(nomeCampo, campo.ident);
             }
             Tipo tipo = SPRGENUtils.mapStringToTipo(campo.tipo.getText());

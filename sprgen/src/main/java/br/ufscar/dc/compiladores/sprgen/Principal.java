@@ -6,17 +6,26 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
 public class Principal {
 
     public static void main(String[] args) {
+        if (args.length < 1) {
+            System.out.println("Uso: java Principal <entrada>");
+            return;
+        }
+
+        String inputFilePath = args[0];
+        Path inputPath = Paths.get(inputFilePath);
+
         CharStream cs;
         try {
-            cs = CharStreams.fromFileName(args[0]);
-        } catch (IOException exception) {
-            System.out.println("Erro ao validar abertura de arquivo");
+            cs = CharStreams.fromFileName(inputFilePath);
+        } catch (IOException e) {
+            System.out.println("Erro ao validar abertura de arquivo: " + e.getMessage());
             return;
         }
 
@@ -52,6 +61,7 @@ public class Principal {
         // Geração de código
         SPRGENGenerator sprgenGenerator = new SPRGENGenerator();
         sprgenGenerator.visitPrograma(programaContext);
+        String generatedJavaCodePath = "Bundle/spr-generated-api/src/main/java/com/example/sprGeneratedApi/";
 
         // Verificar se o código gerado não está vazio
         String codigoGerado = sprgenGenerator.codigoGerado.toString();
@@ -59,11 +69,19 @@ public class Principal {
             System.out.println("Erro: O código gerado está vazio.");
         } else {
             try {
-                String path = "Bundle/spr-generated-api/src/main/java/com/example/sprGeneratedApi/SprGeneratedApi.java";
-                Files.write(Paths.get(path), Collections.singletonList(codigoGerado));
-                System.out.println("Código gerado com sucesso.");
+                // Gerar o arquivo .java no caminho especificado
+                Path outputJavaPath = Paths.get(generatedJavaCodePath, "SprGeneratedApi.java");
+                Files.write(outputJavaPath, Collections.singletonList(codigoGerado));
+                System.out.println("Código Java gerado com sucesso.");
+
+                // Gerar e escrever o arquivo .out no mesmo local que o arquivo de entrada
+                String outputFileName = inputPath.getFileName().toString().split("\\.")[0] + ".out";
+                Path outputOutPath = inputPath.resolveSibling(outputFileName);
+                Files.write(outputOutPath, Collections.singletonList(codigoGerado));
+                System.out.println("Arquivo de saída .out gerado com sucesso.");
+
             } catch (IOException e) {
-                System.out.println("Erro ao gerar o arquivo SprGeneratedApi.java: " + e.getMessage());
+                System.out.println("Erro ao gerar os arquivos: " + e.getMessage());
             }
         }
     }

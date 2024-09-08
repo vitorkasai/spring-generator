@@ -1,0 +1,111 @@
+package com.example.sprGeneratedApi;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.*;
+
+@SpringBootApplication
+public class SprGeneratedApi {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SprGeneratedApi.class, args);
+    }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static class Aluno {
+        private Long id;
+        private String nome;
+        private Long ra;
+        private boolean aprovado;
+        private LocalDateTime dataCriacao;
+        private LocalDateTime dataAlteracao;
+    }
+
+    @Repository
+    static class AlunoRepository {
+        private final Map<Long, Aluno> entidades = new HashMap<>();
+        private Long idContador = 1L;
+
+        public List<Aluno> findAll() {
+            return new ArrayList<>(entidades.values());
+        }
+
+        public Optional<Aluno> findById(Long id) {
+            return Optional.ofNullable(entidades.get(id));
+        }
+
+        public Aluno save(Aluno entidade) {
+            if (entidade.getId() == null) {
+                entidade.setId(idContador++);
+            }
+            entidade.setDataCriacao(LocalDateTime.now());
+            entidades.put(entidade.getId(), entidade);
+            return entidade;
+        }
+
+        public void deleteById(Long id) {
+            entidades.remove(id);
+        }
+
+    }
+
+    // Endpoints da API gerados
+    @RestController
+    @RequiredArgsConstructor
+    @RequestMapping("/spr-generated-api/aluno")
+    static class AlunoController {
+        private final AlunoRepository alunoRepository;
+
+        @GetMapping
+        public List<Aluno> getAll() {
+            return alunoRepository.findAll();
+        }
+
+        @GetMapping("/{id}")
+        public ResponseEntity<Aluno> getById(@PathVariable Long id) {
+            return alunoRepository.findById(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }
+
+        @PostMapping
+        public Aluno create(@RequestBody Aluno aluno) {
+        return alunoRepository.save(aluno);
+        }
+
+        @PutMapping("/{id}")
+        public ResponseEntity<Aluno> update(@PathVariable Long id, @RequestBody Aluno aluno) {
+            return alunoRepository.findById(id)
+                    .map(e -> {
+                        aluno.setId(e.getId());
+                        aluno.setDataAlteracao(LocalDateTime.now());
+                        alunoRepository.save(aluno);
+                        return new ResponseEntity<>(aluno, HttpStatus.OK);
+                    })
+                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }
+
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+            if (alunoRepository.findById(id).isPresent()) {
+                alunoRepository.deleteById(id);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+
+    }
+
+}

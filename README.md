@@ -11,17 +11,10 @@ O compilador identifica erros léxicos, sintáticos e semânticos.
 
 ## Identificação de Erros
 
-### Erros Léxicos
-
-### Erros sintáticos
-
-### Erros semânticos
-
-### Erros genéricos (do próprio gerador)
+O projeto contém exemplos de execução e compilação identificando erros em `sprgen/casos-de-teste`.
+Os casos de teste que identificam erros estão separados em análise léxicas, análise sintáticas e análise semânticas em suas respectivas pastas.
 
 ## Gerador de Código Java Spring
-
-
 ## Instruções de Uso
 
 ### Tecnologias Necessárias

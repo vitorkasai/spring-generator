@@ -14,6 +14,7 @@ public class ErrorListener implements ANTLRErrorListener {
                             int charPositionInLine, String msg, RecognitionException e) {
         Token token = (Token) offendingSymbol;
         if (Boolean.TRUE.equals(ValidateErrorHelper.isError(token.getType()))) {
+            System.out.println("token no syntaxError: " + token.getText() + ", " + token.getType());
             ValidateErrorHelper.errosSintaticos.add(ValidateErrorHelper.stringifyError(token));
             System.out.println(ValidateErrorHelper.stringifyError(token));
         } else {
@@ -21,7 +22,7 @@ public class ErrorListener implements ANTLRErrorListener {
             System.out.println(ValidateErrorHelper.stringifySyntaxError(line, token));
         }
         ValidateErrorHelper.errosSintaticos.add("Compilacao interrompida.");
-        //throw new ParseCancellationException();
+        throw new ParseCancellationException();
     }
 
     @Override

@@ -2,6 +2,8 @@ package br.ufscar.dc.compiladores.sprgen;
 
 import org.antlr.v4.runtime.Token;
 
+import com.ibm.icu.text.IDNA.Error;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +63,7 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
      *  6. para cada rota do endpoint, se o identificador :id é uma classe
      */
     public Void visitEndpoint(SPRGENParser.EndpointContext ctx) {
+        Token rotaPontoGetStart = null;
         try {
             String id = ctx.IDENT().getText();
 
@@ -76,6 +79,8 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
 
             Endpoint endpoint = new Endpoint();
             for (SPRGENParser.RotaContext rota : ctx.rotas) {
+                rotaPontoGetStart = rota.getStart();
+
                 String url = rota.STRING().getText();
                 Rota.MetodoHttp metodoHttp = SPRGENUtils.mapStringToMetodoHttp(rota.metodoHttp().getText());
 
@@ -108,7 +113,7 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
             return super.visitEndpoint(ctx);
         } catch (IllegalArgumentException e) {
             System.out.println("Erro na validação de chaves do path variable");
-            erroValidacaoChaves();
+            erroValidacaoChaves(rotaPontoGetStart);
             return null;
         }
     }
@@ -131,6 +136,7 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
 
     public void erroRotaJaDeclarada(String metodoHttp, String url, Token token) {
         ValidateErrorHelper.addErroSemantico(token, String.format("rota %s %s declarado anteriormente", metodoHttp, url));
+        
     }
 
     public void erroTipoInvalido(Token token) {
@@ -145,8 +151,8 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
         ValidateErrorHelper.addErroSemantico(token, String.format("método %s não deveria conter um identificador", metodoHttp));
     }
 
-    public void erroValidacaoChaves() {
-        ValidateErrorHelper.addErroChaves("fechamento das chaves ( } ) necessário");
+    public void erroValidacaoChaves(Token token) {
+        ValidateErrorHelper.addErroChaves(token, "fechamento das chaves ( } ) necessário");
     }
 
 

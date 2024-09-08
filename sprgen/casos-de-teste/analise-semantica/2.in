@@ -1,12 +1,14 @@
 // Deve retornar erro de identificador não declarado anteriormente
 entidades = [
     Pessoa = {
+        id: Long
         nome: String
         cpf: String
         email: String
         idade: Long
     }
     Carro = {
+        id: Long
         modelo: String
         placa: String
         ano: Long
@@ -17,10 +19,10 @@ entidades = [
 endpoints = [
     Pessoa = {
         GET "/pessoa"
-        GET "/pessoa/{cpf}"
+        GET "/pessoa/{id}"
         POST "/pessoa"
-        PUT "/pessoa/{cpf}"
-        DELETE "/pessoa/{cpf}"
+        PUT "/pessoa/{id}"
+        DELETE "/pessoa/{id}"
     }
     Carro = {
         GET "/carro/{renavam}"

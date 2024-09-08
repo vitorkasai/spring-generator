@@ -26,7 +26,7 @@ public class ValidateErrorHelper {
    // Recebe um Token de erro e o formata
     public static String stringifyError(Token token) {
         StringBuilder tokenStringBuilder = new StringBuilder();
-        tokenStringBuilder.append("Linha ");
+        tokenStringBuilder.append("Erro na linha ");
         tokenStringBuilder.append(token.getLine());
         tokenStringBuilder.append(": ");
         if (token.getType() == SPRGENLexer.INVALID_CHAR) {
@@ -40,9 +40,9 @@ public class ValidateErrorHelper {
     // Recebe a localização da linha onde o token falhou e retorna o erro em String
     public static String stringifySyntaxError(int line, Token token) {
         StringBuilder tokenStringBuilder = new StringBuilder();
-        tokenStringBuilder.append("Linha ");
+        tokenStringBuilder.append("Erro na linha ");
         tokenStringBuilder.append(line - 1);
-        tokenStringBuilder.append(": erro próximo a ");
+        tokenStringBuilder.append(" próximo a ");
         if (token.getType() == SPRGENLexer.EOF) {
             tokenStringBuilder.append("EOF");
         } else {
@@ -53,16 +53,23 @@ public class ValidateErrorHelper {
 
     // Recebe o token e a mensagem do erro, e adiciona na lista de erros
     public static void addErroSemantico(Token token, String msg) {
-        errosSemanticos.add(String.format("Linha %d: %s", token.getLine(), msg));
+        errosSemanticos.add(String.format("Erro na linha %d: %s", token.getLine(), msg));
+        errosSemanticos.add("Compilacao interrompida.");      
     }
 
     // Recebe o token e a mensagem do erro, e adiciona na lista de erros
-    public static void addErroChaves(String msg) {
-        errosSemanticos.add(msg);
+    public static void addErroChaves(Token token, String msg) {
+        if (token != null) {
+            errosSemanticos.add(String.format("Erro na linha %d: %s", token.getLine(), msg));
+        } else {
+            errosSemanticos.add(String.format("Erro: %s", msg));
+        }        
+        errosSemanticos.add("Compilacao interrompida.");
     }
 
     public static void addErroSintatico(Token token, String msg) {
-        errosSintaticos.add(String.format("Linha %d: %s", token.getLine(), msg));
+        errosSintaticos.add(String.format("Erro na linha %d: %s", token.getLine(), msg));
+        errosSintaticos.add("Compilacao interrompida.");
     }
 
 }

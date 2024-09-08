@@ -1,6 +1,7 @@
 // Deve gerar erro pois o método POST não pode ter um identificador na URL
 entidades = [
     Pessoa = {
+        id: Long
         nome: String
         email: String
         idade: Long
@@ -10,9 +11,9 @@ entidades = [
 endpoints = [
     Pessoa = {
         GET "/pessoa"
-        GET "/pessoa/{nome}"
-        POST "/pessoa/{nome}"
-        PUT "/pessoa/{nome}"
-        DELETE "/pessoa/{nome}"
+        GET "/pessoa/{id}"
+        POST "/pessoa/{id}"
+        PUT "/pessoa/{id}"
+        DELETE "/pessoa/{id}"
     }
 ]

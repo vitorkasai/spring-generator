@@ -3,6 +3,7 @@ package br.ufscar.dc.compiladores.sprgen;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,19 +37,21 @@ public class Principal {
         parser.removeErrorListeners();
         parser.addErrorListener(errorListener);
 
-        // Análise sintática
-        SPRGENParser.ProgramaContext programaContext = parser.programa();
-
-        // Análise semântica
-        SPRGENSemantic semantic = new SPRGENSemantic();
-        semantic.visitPrograma(programaContext);
-
         String outputFileName = inputPath.getFileName().toString().split("\\.")[0] + ".out";
+        Path outputOutPath = inputPath.resolveSibling(outputFileName);
 
         try {
+
+            
+            // Análise sintática
+            SPRGENParser.ProgramaContext programaContext = parser.programa();
+
+            // Análise semântica
+            SPRGENSemantic semantic = new SPRGENSemantic();
+            semantic.visitPrograma(programaContext);
+
             // Verificação de erros sintáticos
             if (!ValidateErrorHelper.errosSintaticos.isEmpty()) {
-                Path outputOutPath = inputPath.resolveSibling(outputFileName);
                 PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
                 ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile.println(e));
                 System.out.println("Compilação interrompida devido a erros sintáticos.");
@@ -58,9 +61,8 @@ public class Principal {
 
             // Verificação de erros semânticos
             if (!ValidateErrorHelper.errosSemanticos.isEmpty()) {
-                Path outputOutPath = inputPath.resolveSibling(outputFileName);
                 PrintWriter writerOutFile2 = new PrintWriter(outputOutPath.toString());
-                ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile2.println(e));
+                ValidateErrorHelper.errosSemanticos.forEach(e -> writerOutFile2.println(e));
                 System.out.println("Compilação interrompida devido a erros semânticos.");
                 writerOutFile2.close();
                 return;
@@ -82,7 +84,6 @@ public class Principal {
                     PrintWriter writer = new PrintWriter(generatedJavaCodePath+"/SprGeneratedApi.java");
                     writer.println(codigoGerado);
 
-                    Path outputOutPath = inputPath.resolveSibling(outputFileName);
                     PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
                     writerOutFile.println(codigoGerado);
                     writerOutFile.close();
@@ -93,8 +94,20 @@ public class Principal {
                    
                 }
             }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        } catch (ParseCancellationException er) {
+            // Verificação de erros sintáticos
+            if (!ValidateErrorHelper.errosSintaticos.isEmpty()) {
+                try (PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString())) {   
+                    ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile.println(e));
+                    System.out.println("Compilação interrompida devido a erros sintáticos.");
+                } catch (IOException myError) {
+                    System.out.println(myError.getMessage());
+                }
+                return;
+            }
+            System.out.println(er.getMessage());
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
         }
     }
 }

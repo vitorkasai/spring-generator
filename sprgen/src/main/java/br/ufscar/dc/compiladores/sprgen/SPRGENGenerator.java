@@ -18,6 +18,8 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
 
         codigoGerado.append("import lombok.AllArgsConstructor;\n");
         codigoGerado.append("import lombok.Data;\n");
+        codigoGerado.append("import org.springframework.context.event.EventListener;");
+        codigoGerado.append("import org.springframework.boot.context.event.ApplicationReadyEvent;");
         codigoGerado.append("import java.lang.reflect.Field;\n");
         codigoGerado.append("import lombok.NoArgsConstructor;\n");
         codigoGerado.append("import lombok.RequiredArgsConstructor;\n");
@@ -37,7 +39,14 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
 
         codigoGerado.append("    public static void main(String[] args) {\n");
         codigoGerado.append("        SpringApplication.run(SprGeneratedApi.class, args);\n");
-        codigoGerado.append("    }\n");
+        codigoGerado.append("    }\n\n");
+
+
+        codigoGerado.append("    @EventListener(ApplicationReadyEvent.class)\n");
+        codigoGerado.append("    public void printApiPath() {\n");
+        codigoGerado.append("       System.out.println(\"Servidor iniciado em http://localhost:8080/spr-generated-api/\");\n");
+        codigoGerado.append("    }\n\n");
+
 
         super.visitPrograma(ctx);
 
@@ -185,88 +194,6 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("        }\n\n");
     }
 
-    /*
-     return pessoaRepository.findById(id)
-                .map(e -> {
-
-                    HashMap<String, Object> atributosValores = new HashMap<>();
-                    Field[] fields = pessoa.getClass().getDeclaredFields();
-                    for (Field field : fields) {
-                        field.setAccessible(true);
-                        if (field.get(pessoa) != null) {
-                            atributosValores.put(field.getName(), field.get(pessoa))
-                        }
-                    }                    
-
-                    e.setDataAlteracao(LocalDateTime.now());
-
-                    // percorre chave/valor do map
-                    for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
-                        Field field = e.getClass().getDeclaredField(entry.getKey());
-                        field.setAccesible(true)
-                        field.set(e, entry.getValue())
-                    }
-                    
-                    pessoaRepository.save(e);
-                    return new ResponseEntity<>(e, HttpStatus.OK);
-                })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-     */
-
-     /*
-      * 
-
-      @PutMapping("/{id}")
-public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa pessoa) {
-    // Buscar a pessoa pelo ID no repositório
-    Optional<Pessoa> optionalPessoa = pessoaRepository.findById(id);
-
-    // Verifica se a pessoa está presente no Optional
-    if (optionalPessoa.isPresent()) {
-        // Pessoa encontrada, recupera o objeto
-        Pessoa pessoaExistente = optionalPessoa.get();
-
-        try {
-            // Mapeia os atributos e valores da nova pessoa
-            HashMap<String, Object> atributosValores = new HashMap<>();
-            Field[] fields = pessoa.getClass().getDeclaredFields();
-
-            // Percorre os atributos da nova pessoa
-            for (Field field : fields) {
-                field.setAccessible(true);  // Permite acessar os campos privados
-                if (field.get(pessoa) != null) {  // Se o campo não for nulo
-                    atributosValores.put(field.getName(), field.get(pessoa));  // Adiciona ao mapa
-                }
-            }
-
-            // Atualiza a data de alteração
-            pessoaExistente.setDataAlteracao(LocalDateTime.now());
-
-            // Atualiza os valores dos atributos da entidade existente
-            for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
-                Field field = pessoaExistente.getClass().getDeclaredField(entry.getKey());
-                field.setAccessible(true);  // Permite acessar os campos privados
-                field.set(pessoaExistente, entry.getValue());  // Define o novo valor no objeto existente
-            }
-
-            // Salva a entidade atualizada no repositório
-            pessoaRepository.save(pessoaExistente);
-
-            // Retorna a resposta com a entidade atualizada
-            return new ResponseEntity<>(pessoaExistente, HttpStatus.OK);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);  // Retorna erro em caso de exceção
-        }
-    } else {
-        // Se a pessoa não foi encontrada, retorna 404 Not Found
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-}
-
-      */
-
     private void generatePutCode(String id) {
         String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @PutMapping(\"/{id}\")\n");
@@ -308,7 +235,7 @@ public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa 
         
         codigoGerado.append("                       "+repositoryInstance+".save("+id.toLowerCase()+"Existente);\n");    
         
-        codigoGerado.append("                       return new ResponseEntity<>(").append(id.toLowerCase()).append(", HttpStatus.OK);\n");
+        codigoGerado.append("                       return ResponseEntity.ok().build();\n");
 
         // } catch (Exception ex) {
         codigoGerado.append("           } catch (Exception ex) {\n");

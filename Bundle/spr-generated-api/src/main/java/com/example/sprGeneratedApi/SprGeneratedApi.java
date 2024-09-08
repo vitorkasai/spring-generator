@@ -2,7 +2,7 @@ package com.example.sprGeneratedApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import java.lang.reflect.Field;
+import org.springframework.context.event.EventListener;import org.springframework.boot.context.event.ApplicationReadyEvent;import java.lang.reflect.Field;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +21,12 @@ public class SprGeneratedApi {
     public static void main(String[] args) {
         SpringApplication.run(SprGeneratedApi.class, args);
     }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void printApiPath() {
+       System.out.println("Servidor iniciado em http://localhost:8080/spr-generated-api/");
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -108,14 +114,14 @@ public class SprGeneratedApi {
                        field.set(pessoaExistente, entry.getValue());
                        }
                        pessoaRepository.save(pessoaExistente);
-                       return new ResponseEntity<>(pessoa, HttpStatus.OK);
+                       return ResponseEntity.ok().build();
            } catch (Exception ex) {
                ex.printStackTrace();
                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
            }
         }
 
-return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         @DeleteMapping("/{id}")

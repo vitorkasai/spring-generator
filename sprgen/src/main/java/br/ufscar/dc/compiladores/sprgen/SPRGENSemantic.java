@@ -20,11 +20,6 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
     }
 
     @Override
-    /* Deve verificar:
-     *  1. se a Classe foi declarada anteriormente
-     *  2. para cada campo da classe, se o campo já foi declarado
-     *  3. para cada campo da classe, se o tipo existe
-     */
     public Void visitEntidade(SPRGENParser.EntidadeContext ctx) {
         String id = ctx.IDENT().getText();
         if (entidades.containsKey(id)) {
@@ -65,14 +60,6 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
     }
 
     @Override
-    /* Deve verificar:
-     *  1. se a Classe foi declarada anteriormente
-     *  2. se o Endpoint foi declarado anteriormente
-     *  3. para cada rota do endpoint, se a rota já foi declarada
-     *  4. para cada rota do endpoint, se existe identificador :id
-     *  5. para cada rota do endpoint, se o identificador :id existe na classe
-     *  6. para cada rota do endpoint, se o identificador :id é uma classe
-     */
     public Void visitEndpoint(SPRGENParser.EndpointContext ctx) {
         Token rotaPontoGetStart = null;
         try {

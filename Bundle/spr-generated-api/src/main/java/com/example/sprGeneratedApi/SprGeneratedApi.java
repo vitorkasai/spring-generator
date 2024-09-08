@@ -33,7 +33,6 @@ public class SprGeneratedApi {
     static class Pessoa {
         private Long id;
         private String nome;
-        private String cpf;
         private String email;
         private Long idade;
         private LocalDateTime dataCriacao;
@@ -54,47 +53,6 @@ public class SprGeneratedApi {
         }
 
         public Pessoa save(Pessoa entidade) {
-            if (entidade.getId() == null) {
-                entidade.setId(idContador++);
-            }
-            entidade.setDataCriacao(LocalDateTime.now());
-            entidades.put(entidade.getId(), entidade);
-            return entidade;
-        }
-
-        public void deleteById(Long id) {
-            entidades.remove(id);
-        }
-
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class Carro {
-        private Long id;
-        private String modelo;
-        private String placa;
-        private Long ano;
-        private String cpfDono;
-        private LocalDateTime dataCriacao;
-        private LocalDateTime dataAlteracao;
-    }
-
-    @Repository
-    static class CarroRepository {
-        private final Map<Long, Carro> entidades = new HashMap<>();
-        private Long idContador = 1L;
-
-        public List<Carro> findAll() {
-            return new ArrayList<>(entidades.values());
-        }
-
-        public Optional<Carro> findById(Long id) {
-            return Optional.ofNullable(entidades.get(id));
-        }
-
-        public Carro save(Carro entidade) {
             if (entidade.getId() == null) {
                 entidade.setId(idContador++);
             }
@@ -174,21 +132,6 @@ public class SprGeneratedApi {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        }
-
-    }
-
-    @RestController
-    @RequiredArgsConstructor
-    @RequestMapping("/spr-generated-api/carro")
-    static class CarroController {
-        private final CarroRepository carroRepository;
-
-        @GetMapping("/{id}")
-        public ResponseEntity<Carro> getById(@PathVariable Long id) {
-            return carroRepository.findById(id)
-                    .map(ResponseEntity::ok)
-                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
 
     }

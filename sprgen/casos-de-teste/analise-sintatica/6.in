@@ -1,4 +1,4 @@
-// Deve gerar erro pela falta de fechamento da chaves na passagem de parametro na url " } "
+// Deve gerar erro pela falta de abertura da chaves na passagem de parametro na url " } "
 entidades = [
     Pessoa = {
         id: Long

@@ -1,5 +1,5 @@
 // Deve gerar erro identificador inválido (não pode iniciar com número)
-entidades = [
+1entidades = [
     Pessoa = {
         id: Long
         1nome: String
@@ -8,7 +8,7 @@ entidades = [
     }
 ]
 
-2endpoints = [
+endpoints = [
     Pessoa = {
         GET "/pessoa"
         GET "/pessoa/{id}"

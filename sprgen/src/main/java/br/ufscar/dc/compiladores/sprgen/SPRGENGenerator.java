@@ -36,20 +36,16 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("@SpringBootApplication\n");
         codigoGerado.append("public class SprGeneratedApi {\n\n");
 
-
         codigoGerado.append("    public static void main(String[] args) {\n");
         codigoGerado.append("        SpringApplication.run(SprGeneratedApi.class, args);\n");
         codigoGerado.append("    }\n\n");
-
 
         codigoGerado.append("    @EventListener(ApplicationReadyEvent.class)\n");
         codigoGerado.append("    public void printApiPath() {\n");
         codigoGerado.append("       System.out.println(\"Servidor iniciado em http://localhost:8080/spr-generated-api/\");\n");
         codigoGerado.append("    }\n\n");
 
-
         super.visitPrograma(ctx);
-
         codigoGerado.append("}");
         return null;
     }
@@ -58,14 +54,12 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
     public Void visitEntidade(SPRGENParser.EntidadeContext ctx) {
         String id = ctx.IDENT().getText();
         Entidade entidade = new Entidade();
-
         for (SPRGENParser.CampoContext campo : ctx.campos) {
             String nomeCampo = campo.ident.getText();
             Tipo tipo = SPRGENUtils.mapStringToTipo(campo.tipo.getText());
             entidade.add(tipo, nomeCampo);
         }
         entidades.put(id, entidade);
-
         codigoGerado.append("    @Data\n");
         codigoGerado.append("    @NoArgsConstructor\n");
         codigoGerado.append("    @AllArgsConstructor\n");
@@ -124,7 +118,6 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("    @RequiredArgsConstructor\n");
         codigoGerado.append("    @RequestMapping(\"/spr-generated-api/").append(id.toLowerCase()).append("\")\n");
         codigoGerado.append("    static class ").append(id).append("Controller {\n");
-
         codigoGerado.append("        private final ").append(id).append("Repository ").append(repositoryInstance).append(";\n\n");
 
         Endpoint endpoint = new Endpoint();
@@ -137,8 +130,8 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         for (Rota rota : endpoint.rotas) {
             generateRotaCode(id, rota);
         }
-
         codigoGerado.append("    }\n\n");
+
         return super.visitEndpoint(ctx);
     }
 
@@ -199,45 +192,34 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("        @PutMapping(\"/{id}\")\n");
         codigoGerado.append("        public ResponseEntity<").append(id).append("> update(@PathVariable Long id, @RequestBody ").append(id).append(" ").append(id.toLowerCase()).append(") {\n");
         
-        //Optional<Pessoa> optionalPessoa = pessoaRepository.findById(id);
-        codigoGerado.append("        Optional<" + id + "> optional" + id + " = " + repositoryInstance + ".findById(id);\n");
+        codigoGerado.append("        Optional<").append(id).append("> optional").append(id).append(" = ").append(repositoryInstance).append(".findById(id);\n");
 
-        //if (optionalPessoa.isPresent()) {
-        codigoGerado.append("        if (optional" + id + ".isPresent()){\n");
+        codigoGerado.append("        if (optional").append(id).append(".isPresent()){\n");
 
-        //  Pessoa pessoaExistente = optionalPessoa.get();
-        codigoGerado.append("           " + id + " " + id.toLowerCase() + "Existente = optional" + id +".get();\n");
-        // try {
+        codigoGerado.append("           ").append(id).append(" ").append(id.toLowerCase()).append("Existente = optional").append(id).append(".get();\n");
         codigoGerado.append("           try {\n");
 
-        // HashMap<String, Object> atributosValores = new HashMap<>();
         codigoGerado.append("               HashMap<String, Object> atributosValores = new HashMap<>();\n");
-        // Field[] fields = pessoa.getClass().getDeclaredFields();
         codigoGerado.append("               Field[] fields = ").append(id.toLowerCase()).append(".getClass().getDeclaredFields();\n");
-        // for (Field field : fields) {
-        // field.setAccessible(true);
         codigoGerado.append("                   for (Field field : fields) {\n");
         codigoGerado.append("                   field.setAccessible(true);\n");
-        //if (field.get(pessoa) != null) {
-        codigoGerado.append("                   if (field.get("+id.toLowerCase() +") != null) {\n");
-        //atributosValores.put(field.getName(), field.get(pessoa))
-        codigoGerado.append("                       atributosValores.put(field.getName(), field.get("+id.toLowerCase()+"));\n");
+        codigoGerado.append("                   if (field.get(").append(id.toLowerCase()).append(") != null) {\n");
+        codigoGerado.append("                       atributosValores.put(field.getName(), field.get(").append(id.toLowerCase()).append("));\n");
         codigoGerado.append("                       }\n");
         codigoGerado.append("                   }\n\n");
         
-        codigoGerado.append("                   "+id.toLowerCase()+"Existente.setDataAlteracao(LocalDateTime.now());\n\n");
+        codigoGerado.append("                   ").append(id.toLowerCase()).append("Existente.setDataAlteracao(LocalDateTime.now());\n\n");
 
         codigoGerado.append("                   for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {\n");
-        codigoGerado.append("                       Field field = "+id.toLowerCase()+"Existente.getClass().getDeclaredField(entry.getKey());\n");
+        codigoGerado.append("                       Field field = ").append(id.toLowerCase()).append("Existente.getClass().getDeclaredField(entry.getKey());\n");
         codigoGerado.append("                       field.setAccessible(true);\n");
-        codigoGerado.append("                       field.set("+id.toLowerCase()+"Existente, entry.getValue());\n");
+        codigoGerado.append("                       field.set(").append(id.toLowerCase()).append("Existente, entry.getValue());\n");
         codigoGerado.append("                       }\n"); 
         
-        codigoGerado.append("                       "+repositoryInstance+".save("+id.toLowerCase()+"Existente);\n");    
+        codigoGerado.append("                       ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append("Existente);\n");
         
         codigoGerado.append("                       return ResponseEntity.ok().build();\n");
 
-        // } catch (Exception ex) {
         codigoGerado.append("           } catch (Exception ex) {\n");
         codigoGerado.append("               ex.printStackTrace();\n");
         codigoGerado.append("               return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);\n");
@@ -245,12 +227,6 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("        }\n\n");
         codigoGerado.append("        return new ResponseEntity<>(HttpStatus.NO_CONTENT);\n");
         codigoGerado.append("        }\n\n");
-        /*
-         *ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);  // Retorna erro em caso de exceção
-        }
-         */
-        
     }
 
     private void generateDeleteCode(String id) {

@@ -5,10 +5,9 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 
 public class Principal {
 
@@ -44,45 +43,59 @@ public class Principal {
         SPRGENSemantic semantic = new SPRGENSemantic();
         semantic.visitPrograma(programaContext);
 
-        // Verificação de erros sintáticos
-        if (!ValidateErrorHelper.errosSintaticos.isEmpty()) {
-            ValidateErrorHelper.errosSintaticos.forEach(System.out::println);
-            System.out.println("Compilação interrompida devido a erros sintáticos.");
-            return;
-        }
+        String outputFileName = inputPath.getFileName().toString().split("\\.")[0] + ".out";
 
-        // Verificação de erros semânticos
-        if (!ValidateErrorHelper.errosSemanticos.isEmpty()) {
-            ValidateErrorHelper.errosSemanticos.forEach(System.out::println);
-            System.out.println("Compilação interrompida devido a erros semânticos.");
-            return;
-        }
-
-        // Geração de código
-        SPRGENGenerator sprgenGenerator = new SPRGENGenerator();
-        sprgenGenerator.visitPrograma(programaContext);
-        String generatedJavaCodePath = "Bundle/spr-generated-api/src/main/java/com/example/sprGeneratedApi/";
-
-        // Verificar se o código gerado não está vazio
-        String codigoGerado = sprgenGenerator.codigoGerado.toString();
-        if (codigoGerado.isEmpty()) {
-            System.out.println("Erro: O código gerado está vazio.");
-        } else {
-            try {
-                // Gerar o arquivo .java no caminho especificado
-                Path outputJavaPath = Paths.get(generatedJavaCodePath, "SprGeneratedApi.java");
-                Files.write(outputJavaPath, Collections.singletonList(codigoGerado));
-                System.out.println("Código Java gerado com sucesso.");
-
-                // Gerar e escrever o arquivo .out no mesmo local que o arquivo de entrada
-                String outputFileName = inputPath.getFileName().toString().split("\\.")[0] + ".out";
+        try {
+            // Verificação de erros sintáticos
+            if (!ValidateErrorHelper.errosSintaticos.isEmpty()) {
                 Path outputOutPath = inputPath.resolveSibling(outputFileName);
-                Files.write(outputOutPath, Collections.singletonList(codigoGerado));
-                System.out.println("Arquivo de saída .out gerado com sucesso.");
-
-            } catch (IOException e) {
-                System.out.println("Erro ao gerar os arquivos: " + e.getMessage());
+                PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
+                ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile.println(e));
+                System.out.println("Compilação interrompida devido a erros sintáticos.");
+                writerOutFile.close();
+                return;
             }
+
+            // Verificação de erros semânticos
+            if (!ValidateErrorHelper.errosSemanticos.isEmpty()) {
+                Path outputOutPath = inputPath.resolveSibling(outputFileName);
+                PrintWriter writerOutFile2 = new PrintWriter(outputOutPath.toString());
+                ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile2.println(e));
+                System.out.println("Compilação interrompida devido a erros semânticos.");
+                writerOutFile2.close();
+                return;
+            }
+
+            if (ValidateErrorHelper.errosSintaticos.isEmpty() && ValidateErrorHelper.errosSemanticos.isEmpty()) {
+                // Geração de código
+                SPRGENGenerator sprgenGenerator = new SPRGENGenerator();
+                sprgenGenerator.visitPrograma(programaContext);
+                String generatedJavaCodePath = "../Bundle/spr-generated-api/src/main/java/com/example/SprGeneratedApi";
+
+                // Verificar se o código gerado não está vazio
+                String codigoGerado = sprgenGenerator.codigoGerado.toString();
+                if (codigoGerado.isEmpty()) {
+                    System.out.println("Erro: O código gerado está vazio.");
+                } else {
+                    // Gerar o arquivo .java no caminho especificado
+                    PrintWriter writer = new PrintWriter(generatedJavaCodePath+"/SprGeneratedApi.java");
+                    writer.println(codigoGerado);
+
+                    Path outputOutPath = inputPath.resolveSibling(outputFileName);
+                    if (outputOutPath.toString().contains("analise-gerador")) {
+                        PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
+                        writerOutFile.println(codigoGerado);
+                        writerOutFile.close();
+                    }
+                                        
+                    System.out.println("Código Java gerado com sucesso.");
+
+                    writer.close();
+                   
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

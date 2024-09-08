@@ -14,12 +14,14 @@ public class ErrorListener implements ANTLRErrorListener {
                             int charPositionInLine, String msg, RecognitionException e) {
         Token token = (Token) offendingSymbol;
         if (Boolean.TRUE.equals(ValidateErrorHelper.isError(token.getType()))) {
+            ValidateErrorHelper.errosSintaticos.add(ValidateErrorHelper.stringifyError(token));
             System.out.println(ValidateErrorHelper.stringifyError(token));
         } else {
+            ValidateErrorHelper.errosSintaticos.add(ValidateErrorHelper.stringifySyntaxError(line, token));
             System.out.println(ValidateErrorHelper.stringifySyntaxError(line, token));
         }
-        System.out.println("Compilação interrompida.");
-        throw new ParseCancellationException();
+        ValidateErrorHelper.errosSintaticos.add("Compilacao interrompida.");
+        //throw new ParseCancellationException();
     }
 
     @Override

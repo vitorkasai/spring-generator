@@ -49,6 +49,30 @@ public class SprGeneratedApi {
             if (entidade.getId() == null) {
                 entidade.setId(idContador++);
             }
+
+            HashMap<String, Object> atributosValores = new HashMap<>();
+            Field[] fields = entidade.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.get(entidade) != null) {
+                    atributosValores.put(field.getName(), field.get(entidade))
+                }
+            }
+            
+
+            Aluno entidadeAtualNoBanco = entidades.getById()
+
+            entidadeAtualNoBanco.setDataAlteracao(LocalDateTime.now());
+
+            // percorre chave/valor do map
+            for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
+                Field field = entidadeAtualNoBanco.getClass().getDeclaredField(entry.getKey());
+                field.setAccesible(true)
+                field.set(entidadeAtualNoBanco, entry.getValue())
+            }
+
+            entidades.put(entidadeAtualNoBanco.getId(), entidadeAtualNoBanco)
+
             entidade.setDataCriacao(LocalDateTime.now());
             entidades.put(entidade.getId(), entidade);
             return entidade;

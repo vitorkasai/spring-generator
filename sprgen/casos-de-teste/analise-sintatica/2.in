@@ -1,4 +1,4 @@
-// Deve gerar erro pois não houve o fechamento da lista ( ] ) na linha 15
+// Deve gerar erro pois não houve o fechamento da lista ( ] ) na linha 17
 entidades = [
     Pessoa = {
         id: Long

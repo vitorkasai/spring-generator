@@ -18,6 +18,7 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
 
         codigoGerado.append("import lombok.AllArgsConstructor;\n");
         codigoGerado.append("import lombok.Data;\n");
+        codigoGerado.append("import java.lang.reflect.Field;\n");
         codigoGerado.append("import lombok.NoArgsConstructor;\n");
         codigoGerado.append("import lombok.RequiredArgsConstructor;\n");
         codigoGerado.append("import org.springframework.boot.SpringApplication;\n");
@@ -184,19 +185,145 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("        }\n\n");
     }
 
+    /*
+     return pessoaRepository.findById(id)
+                .map(e -> {
+
+                    HashMap<String, Object> atributosValores = new HashMap<>();
+                    Field[] fields = pessoa.getClass().getDeclaredFields();
+                    for (Field field : fields) {
+                        field.setAccessible(true);
+                        if (field.get(pessoa) != null) {
+                            atributosValores.put(field.getName(), field.get(pessoa))
+                        }
+                    }                    
+
+                    e.setDataAlteracao(LocalDateTime.now());
+
+                    // percorre chave/valor do map
+                    for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
+                        Field field = e.getClass().getDeclaredField(entry.getKey());
+                        field.setAccesible(true)
+                        field.set(e, entry.getValue())
+                    }
+                    
+                    pessoaRepository.save(e);
+                    return new ResponseEntity<>(e, HttpStatus.OK);
+                })
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+     */
+
+     /*
+      * 
+
+      @PutMapping("/{id}")
+public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa pessoa) {
+    // Buscar a pessoa pelo ID no repositório
+    Optional<Pessoa> optionalPessoa = pessoaRepository.findById(id);
+
+    // Verifica se a pessoa está presente no Optional
+    if (optionalPessoa.isPresent()) {
+        // Pessoa encontrada, recupera o objeto
+        Pessoa pessoaExistente = optionalPessoa.get();
+
+        try {
+            // Mapeia os atributos e valores da nova pessoa
+            HashMap<String, Object> atributosValores = new HashMap<>();
+            Field[] fields = pessoa.getClass().getDeclaredFields();
+
+            // Percorre os atributos da nova pessoa
+            for (Field field : fields) {
+                field.setAccessible(true);  // Permite acessar os campos privados
+                if (field.get(pessoa) != null) {  // Se o campo não for nulo
+                    atributosValores.put(field.getName(), field.get(pessoa));  // Adiciona ao mapa
+                }
+            }
+
+            // Atualiza a data de alteração
+            pessoaExistente.setDataAlteracao(LocalDateTime.now());
+
+            // Atualiza os valores dos atributos da entidade existente
+            for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
+                Field field = pessoaExistente.getClass().getDeclaredField(entry.getKey());
+                field.setAccessible(true);  // Permite acessar os campos privados
+                field.set(pessoaExistente, entry.getValue());  // Define o novo valor no objeto existente
+            }
+
+            // Salva a entidade atualizada no repositório
+            pessoaRepository.save(pessoaExistente);
+
+            // Retorna a resposta com a entidade atualizada
+            return new ResponseEntity<>(pessoaExistente, HttpStatus.OK);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);  // Retorna erro em caso de exceção
+        }
+    } else {
+        // Se a pessoa não foi encontrada, retorna 404 Not Found
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+}
+
+      */
+
     private void generatePutCode(String id) {
         String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @PutMapping(\"/{id}\")\n");
         codigoGerado.append("        public ResponseEntity<").append(id).append("> update(@PathVariable Long id, @RequestBody ").append(id).append(" ").append(id.toLowerCase()).append(") {\n");
-        codigoGerado.append("            return ").append(repositoryInstance).append(".findById(id)\n");
-        codigoGerado.append("                    .map(e -> {\n");
-        codigoGerado.append("                        ").append(id.toLowerCase()).append(".setId(e.getId());\n");
-        codigoGerado.append("                        ").append(id.toLowerCase()).append(".setDataAlteracao(LocalDateTime.now());\n");
-        codigoGerado.append("                        ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append(");\n");
-        codigoGerado.append("                        return new ResponseEntity<>(").append(id.toLowerCase()).append(", HttpStatus.OK);\n");
-        codigoGerado.append("                    })\n");
-        codigoGerado.append("                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));\n");
+        
+        //Optional<Pessoa> optionalPessoa = pessoaRepository.findById(id);
+        codigoGerado.append("        Optional<" + id + "> optional" + id + " = " + repositoryInstance + ".findById(id);\n");
+
+        //if (optionalPessoa.isPresent()) {
+        codigoGerado.append("        if (optional" + id + ".isPresent()){\n");
+
+        //  Pessoa pessoaExistente = optionalPessoa.get();
+        codigoGerado.append("           " + id + " " + id.toLowerCase() + "Existente = optional" + id +".get();\n");
+        // try {
+        codigoGerado.append("           try {\n");
+
+        // HashMap<String, Object> atributosValores = new HashMap<>();
+        codigoGerado.append("               HashMap<String, Object> atributosValores = new HashMap<>();\n");
+        // Field[] fields = pessoa.getClass().getDeclaredFields();
+        codigoGerado.append("               Field[] fields = ").append(id.toLowerCase()).append(".getClass().getDeclaredFields();\n");
+        // for (Field field : fields) {
+        // field.setAccessible(true);
+        codigoGerado.append("                   for (Field field : fields) {\n");
+        codigoGerado.append("                   field.setAccessible(true);\n");
+        //if (field.get(pessoa) != null) {
+        codigoGerado.append("                   if (field.get("+id.toLowerCase() +") != null) {\n");
+        //atributosValores.put(field.getName(), field.get(pessoa))
+        codigoGerado.append("                       atributosValores.put(field.getName(), field.get("+id.toLowerCase()+"));\n");
+        codigoGerado.append("                       }\n");
+        codigoGerado.append("                   }\n\n");
+        
+        codigoGerado.append("                   "+id.toLowerCase()+"Existente.setDataAlteracao(LocalDateTime.now());\n\n");
+
+        codigoGerado.append("                   for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {\n");
+        codigoGerado.append("                       Field field = "+id.toLowerCase()+"Existente.getClass().getDeclaredField(entry.getKey());\n");
+        codigoGerado.append("                       field.setAccessible(true);\n");
+        codigoGerado.append("                       field.set("+id.toLowerCase()+"Existente, entry.getValue());\n");
+        codigoGerado.append("                       }\n"); 
+        
+        codigoGerado.append("                       "+repositoryInstance+".save("+id.toLowerCase()+"Existente);\n");    
+        
+        codigoGerado.append("                       return new ResponseEntity<>(").append(id.toLowerCase()).append(", HttpStatus.OK);\n");
+
+        // } catch (Exception ex) {
+        codigoGerado.append("           } catch (Exception ex) {\n");
+        codigoGerado.append("               ex.printStackTrace();\n");
+        codigoGerado.append("               return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);\n");
+        codigoGerado.append("           }\n");
         codigoGerado.append("        }\n\n");
+        codigoGerado.append("        return new ResponseEntity<>(HttpStatus.NO_CONTENT);\n");
+        codigoGerado.append("        }\n\n");
+        /*
+         *ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);  // Retorna erro em caso de exceção
+        }
+         */
+        
     }
 
     private void generateDeleteCode(String id) {

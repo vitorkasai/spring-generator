@@ -2,6 +2,7 @@ package com.example.sprGeneratedApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import java.lang.reflect.Field;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
@@ -26,7 +27,6 @@ public class SprGeneratedApi {
     static class Pessoa {
         private Long id;
         private String nome;
-        private String cpf;
         private String email;
         private Long idade;
         private LocalDateTime dataCriacao;
@@ -47,47 +47,6 @@ public class SprGeneratedApi {
         }
 
         public Pessoa save(Pessoa entidade) {
-            if (entidade.getId() == null) {
-                entidade.setId(idContador++);
-            }
-            entidade.setDataCriacao(LocalDateTime.now());
-            entidades.put(entidade.getId(), entidade);
-            return entidade;
-        }
-
-        public void deleteById(Long id) {
-            entidades.remove(id);
-        }
-
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    static class Carro {
-        private Long id;
-        private String modelo;
-        private String placa;
-        private Long ano;
-        private String cpfDono;
-        private LocalDateTime dataCriacao;
-        private LocalDateTime dataAlteracao;
-    }
-
-    @Repository
-    static class CarroRepository {
-        private final Map<Long, Carro> entidades = new HashMap<>();
-        private Long idContador = 1L;
-
-        public List<Carro> findAll() {
-            return new ArrayList<>(entidades.values());
-        }
-
-        public Optional<Carro> findById(Long id) {
-            return Optional.ofNullable(entidades.get(id));
-        }
-
-        public Carro save(Carro entidade) {
             if (entidade.getId() == null) {
                 entidade.setId(idContador++);
             }
@@ -128,14 +87,35 @@ public class SprGeneratedApi {
 
         @PutMapping("/{id}")
         public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa pessoa) {
-            return pessoaRepository.findById(id)
-                    .map(e -> {
-                        pessoa.setId(e.getId());
-                        pessoa.setDataAlteracao(LocalDateTime.now());
-                        pessoaRepository.save(pessoa);
-                        return new ResponseEntity<>(pessoa, HttpStatus.OK);
-                    })
-                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Optional<Pessoa> optionalPessoa = pessoaRepository.findById(id);
+        if (optionalPessoa.isPresent()){
+           Pessoa pessoaExistente = optionalPessoa.get();
+           try {
+               HashMap<String, Object> atributosValores = new HashMap<>();
+               Field[] fields = pessoa.getClass().getDeclaredFields();
+                   for (Field field : fields) {
+                   field.setAccessible(true);
+                   if (field.get(pessoa) != null) {
+                       atributosValores.put(field.getName(), field.get(pessoa));
+                       }
+                   }
+
+                   pessoaExistente.setDataAlteracao(LocalDateTime.now());
+
+                   for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
+                       Field field = pessoaExistente.getClass().getDeclaredField(entry.getKey());
+                       field.setAccessible(true);
+                       field.set(pessoaExistente, entry.getValue());
+                       }
+                       pessoaRepository.save(pessoaExistente);
+                       return new ResponseEntity<>(pessoa, HttpStatus.OK);
+           } catch (Exception ex) {
+               ex.printStackTrace();
+               return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+           }
+        }
+
+return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         @DeleteMapping("/{id}")
@@ -146,21 +126,6 @@ public class SprGeneratedApi {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        }
-
-    }
-
-    @RestController
-    @RequiredArgsConstructor
-    @RequestMapping("/spr-generated-api/carro")
-    static class CarroController {
-        private final CarroRepository carroRepository;
-
-        @GetMapping("/{id}")
-        public ResponseEntity<Carro> getById(@PathVariable Long id) {
-            return carroRepository.findById(id)
-                    .map(ResponseEntity::ok)
-                    .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
 
     }

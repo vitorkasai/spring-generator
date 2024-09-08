@@ -54,7 +54,6 @@ public class ValidateErrorHelper {
     // Recebe o token e a mensagem do erro, e adiciona na lista de erros
     public static void addErroSemantico(Token token, String msg) {
         errosSemanticos.add(String.format("Erro na linha %d: %s", token.getLine(), msg));
-        errosSemanticos.add("Compilacao interrompida.");      
     }
 
     // Recebe o token e a mensagem do erro, e adiciona na lista de erros
@@ -64,12 +63,10 @@ public class ValidateErrorHelper {
         } else {
             errosSemanticos.add(String.format("Erro: %s", msg));
         }        
-        errosSemanticos.add("Compilacao interrompida.");
     }
 
     public static void addErroSintatico(Token token, String msg) {
         errosSintaticos.add(String.format("Erro na linha %d: %s", token.getLine(), msg));
-        errosSintaticos.add("Compilacao interrompida.");
     }
 
 }

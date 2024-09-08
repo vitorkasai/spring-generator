@@ -21,7 +21,6 @@ public class ErrorListener implements ANTLRErrorListener {
             ValidateErrorHelper.errosSintaticos.add(ValidateErrorHelper.stringifySyntaxError(line, token));
             System.out.println(ValidateErrorHelper.stringifySyntaxError(line, token));
         }
-        ValidateErrorHelper.errosSintaticos.add("Compilacao interrompida.");
         throw new ParseCancellationException();
     }
 

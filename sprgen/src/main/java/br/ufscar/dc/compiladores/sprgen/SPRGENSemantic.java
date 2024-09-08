@@ -34,8 +34,15 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
 
         Entidade entidade = new Entidade();
 
+        boolean entidadeContemId = false;
+
         for (SPRGENParser.CampoContext campo : ctx.campos) {
             String nomeCampo = campo.ident.getText();
+
+            if (nomeCampo.equals("id") && campo.tipo.getText().equals("Long")) {
+                entidadeContemId = true;
+            }
+
             if (entidade.contains(nomeCampo)) {
                 erroIdentJaDeclarado(nomeCampo, campo.ident); // Verifica se já existe atributo com o mesmo nome
             }
@@ -47,6 +54,10 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
                 erroIdentNaoPermitidoNoEscopo(campo.tipo.getText(), campo.tipo);
             }
             entidade.add(tipo, nomeCampo);
+        }
+
+        if (!entidadeContemId) {
+            erroEntidadeSemId(id, ctx.getStart());
         }
 
         entidades.put(id, entidade);
@@ -149,6 +160,10 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
 
     public void erroNaoDeveConterId(String metodoHttp, Token token) {
         ValidateErrorHelper.addErroSemantico(token, String.format("método %s não deveria conter um identificador", metodoHttp));
+    }
+
+    public void erroEntidadeSemId(String entidade, Token token) {
+        ValidateErrorHelper.addErroSemantico(token, String.format("Entidade %s não possui id.", entidade));
     }
 
     public void erroValidacaoChaves(Token token, String message) {

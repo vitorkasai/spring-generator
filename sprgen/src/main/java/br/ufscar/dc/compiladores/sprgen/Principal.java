@@ -55,6 +55,7 @@ public class Principal {
                 PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
                 ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile.println(e));
                 System.out.println("Compilação interrompida devido a erros sintáticos.");
+                writerOutFile.println("Compilacao interrompida.");
                 writerOutFile.close();
                 return;
             }
@@ -64,6 +65,7 @@ public class Principal {
                 PrintWriter writerOutFile2 = new PrintWriter(outputOutPath.toString());
                 ValidateErrorHelper.errosSemanticos.forEach(e -> writerOutFile2.println(e));
                 System.out.println("Compilação interrompida devido a erros semânticos.");
+                writerOutFile2.println("Compilacao interrompida.");
                 writerOutFile2.close();
                 return;
             }
@@ -99,6 +101,7 @@ public class Principal {
             if (!ValidateErrorHelper.errosSintaticos.isEmpty()) {
                 try (PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString())) {   
                     ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile.println(e));
+                    writerOutFile.println("Compilacao interrompida.");
                     System.out.println("Compilação interrompida devido a erros sintáticos.");
                 } catch (IOException myError) {
                     System.out.println(myError.getMessage());

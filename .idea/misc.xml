@@ -6,6 +6,8 @@
       <list>
         <option value="$PROJECT_DIR$/sprgen/pom.xml" />
         <option value="$PROJECT_DIR$/Teste-Java/simple-api/pom.xml" />
+        <option value="$PROJECT_DIR$/Teste-Java/spr-generated-api/pom.xml" />
+        <option value="$PROJECT_DIR$/Bundle/spr-generated-api/pom.xml" />
       </list>
     </option>
   </component>

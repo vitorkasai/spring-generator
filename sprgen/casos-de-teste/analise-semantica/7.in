@@ -1,4 +1,4 @@
-// Deve gerar erro pois o método POST não pode ter um identificador na URL
+// Deve gerar erro pois não foi declarado o identificador primário (id) da entidade
 entidades = [
     Pessoa = {
         nome: String

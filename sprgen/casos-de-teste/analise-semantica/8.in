@@ -1,4 +1,4 @@
-// Deve obter sucesso na compilação e gerar o código em java
+// Deve dar erro pois Carro e Endereco não contém identificadores
 entidades = [
     Pessoa = {
         id: Long

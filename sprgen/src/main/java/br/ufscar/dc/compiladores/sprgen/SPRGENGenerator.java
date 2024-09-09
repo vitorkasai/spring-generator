@@ -183,7 +183,7 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @PostMapping\n");
         codigoGerado.append("        public ").append(id).append(" create(@RequestBody ").append(id).append(" ").append(id.toLowerCase()).append(") {\n");
-        codigoGerado.append("        return ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append(");\n");
+        codigoGerado.append("           return ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append(");\n");
         codigoGerado.append("        }\n\n");
     }
 

@@ -1,7 +1,5 @@
 package br.ufscar.dc.compiladores.sprgen;
 
-import com.ibm.icu.impl.IllegalIcuArgumentException;
-
 public class SPRGENUtils {
 
     // Recebe uma cadeia e mapeia para o tipo adequado
@@ -43,8 +41,7 @@ public class SPRGENUtils {
                     throw new IllegalArgumentException("Fechamento de chaves ( } ) necessário.");
                 }
                 return secondHalf.substring(0, secondHalf.length() - 2);
-            }
-            else {
+            } else {
                 String aux = secondHalf.split("/")[0];
                 if (!aux.contains("}")) {
                     throw new IllegalArgumentException("Fechamento de chaves ( } ) necessário.");
@@ -64,8 +61,7 @@ public class SPRGENUtils {
     public static String mapTipoToString(Tipo tipo) {
         if (tipo != Tipo.STRING && tipo != Tipo.LONG && tipo != Tipo.BOOLEAN) {
             return Tipo.STRING.getValue();
-        }
-        else {
+        } else {
             return tipo.getValue();
         }
     }

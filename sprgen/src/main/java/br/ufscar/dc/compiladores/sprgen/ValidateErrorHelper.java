@@ -23,7 +23,7 @@ public class ValidateErrorHelper {
         return errorTokens.containsKey(tipoToken);
     }
 
-   // Recebe um Token de erro e o formata
+    // Recebe um Token de erro e o formata
     public static String stringifyError(Token token) {
         StringBuilder tokenStringBuilder = new StringBuilder();
         tokenStringBuilder.append("Erro na linha ");
@@ -62,7 +62,7 @@ public class ValidateErrorHelper {
             errosSemanticos.add(String.format("Erro na linha %d: %s", token.getLine(), msg));
         } else {
             errosSemanticos.add(String.format("Erro: %s", msg));
-        }        
+        }
     }
 
     public static void addErroSintatico(Token token, String msg) {

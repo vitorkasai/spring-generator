@@ -2,8 +2,6 @@ package br.ufscar.dc.compiladores.sprgen;
 
 import org.antlr.v4.runtime.Token;
 
-import com.ibm.icu.text.IDNA.Error;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -134,7 +132,7 @@ public class SPRGENSemantic extends SPRGENBaseVisitor<Void> {
 
     public void erroRotaJaDeclarada(String metodoHttp, String url, Token token) {
         ValidateErrorHelper.addErroSemantico(token, String.format("rota %s %s declarado anteriormente", metodoHttp, url));
-        
+
     }
 
     public void erroTipoInvalido(Token token) {

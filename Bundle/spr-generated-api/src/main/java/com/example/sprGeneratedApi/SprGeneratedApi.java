@@ -2,16 +2,18 @@ package com.example.sprGeneratedApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.context.event.EventListener;import org.springframework.boot.context.event.ApplicationReadyEvent;import java.lang.reflect.Field;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -24,7 +26,7 @@ public class SprGeneratedApi {
 
     @EventListener(ApplicationReadyEvent.class)
     public void printApiPath() {
-       System.out.println("Servidor iniciado em http://localhost:8080/spr-generated-api/");
+        System.out.println("Servidor iniciado em http://localhost:8080/spr-generated-api/");
     }
 
     @Data
@@ -88,40 +90,40 @@ public class SprGeneratedApi {
 
         @PostMapping
         public Pessoa create(@RequestBody Pessoa pessoa) {
-        return pessoaRepository.save(pessoa);
+            return pessoaRepository.save(pessoa);
         }
 
         @PutMapping("/{id}")
         public ResponseEntity<Pessoa> update(@PathVariable Long id, @RequestBody Pessoa pessoa) {
-        Optional<Pessoa> optionalPessoa = pessoaRepository.findById(id);
-        if (optionalPessoa.isPresent()){
-           Pessoa pessoaExistente = optionalPessoa.get();
-           try {
-               HashMap<String, Object> atributosValores = new HashMap<>();
-               Field[] fields = pessoa.getClass().getDeclaredFields();
-                   for (Field field : fields) {
-                   field.setAccessible(true);
-                   if (field.get(pessoa) != null) {
-                       atributosValores.put(field.getName(), field.get(pessoa));
-                       }
-                   }
+            Optional<Pessoa> optionalPessoa = pessoaRepository.findById(id);
+            if (optionalPessoa.isPresent()) {
+                Pessoa pessoaExistente = optionalPessoa.get();
+                try {
+                    HashMap<String, Object> atributosValores = new HashMap<>();
+                    Field[] fields = pessoa.getClass().getDeclaredFields();
+                    for (Field field : fields) {
+                        field.setAccessible(true);
+                        if (field.get(pessoa) != null) {
+                            atributosValores.put(field.getName(), field.get(pessoa));
+                        }
+                    }
 
-                   pessoaExistente.setDataAlteracao(LocalDateTime.now());
+                    pessoaExistente.setDataAlteracao(LocalDateTime.now());
 
-                   for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
-                       Field field = pessoaExistente.getClass().getDeclaredField(entry.getKey());
-                       field.setAccessible(true);
-                       field.set(pessoaExistente, entry.getValue());
-                       }
-                       pessoaRepository.save(pessoaExistente);
-                       return ResponseEntity.ok().build();
-           } catch (Exception ex) {
-               ex.printStackTrace();
-               return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-           }
-        }
+                    for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {
+                        Field field = pessoaExistente.getClass().getDeclaredField(entry.getKey());
+                        field.setAccessible(true);
+                        field.set(pessoaExistente, entry.getValue());
+                    }
+                    pessoaRepository.save(pessoaExistente);
+                    return ResponseEntity.ok().build();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         @DeleteMapping("/{id}")

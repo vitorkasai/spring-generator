@@ -191,7 +191,7 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @PutMapping(\"/{id}\")\n");
         codigoGerado.append("        public ResponseEntity<").append(id).append("> update(@PathVariable Long id, @RequestBody ").append(id).append(" ").append(id.toLowerCase()).append(") {\n");
-        
+
         codigoGerado.append("        Optional<").append(id).append("> optional").append(id).append(" = ").append(repositoryInstance).append(".findById(id);\n");
 
         codigoGerado.append("        if (optional").append(id).append(".isPresent()){\n");
@@ -207,17 +207,17 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("                       atributosValores.put(field.getName(), field.get(").append(id.toLowerCase()).append("));\n");
         codigoGerado.append("                       }\n");
         codigoGerado.append("                   }\n\n");
-        
+
         codigoGerado.append("                   ").append(id.toLowerCase()).append("Existente.setDataAlteracao(LocalDateTime.now());\n\n");
 
         codigoGerado.append("                   for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {\n");
         codigoGerado.append("                       Field field = ").append(id.toLowerCase()).append("Existente.getClass().getDeclaredField(entry.getKey());\n");
         codigoGerado.append("                       field.setAccessible(true);\n");
         codigoGerado.append("                       field.set(").append(id.toLowerCase()).append("Existente, entry.getValue());\n");
-        codigoGerado.append("                       }\n"); 
-        
+        codigoGerado.append("                       }\n");
+
         codigoGerado.append("                       ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append("Existente);\n");
-        
+
         codigoGerado.append("                       return ResponseEntity.ok().build();\n");
 
         codigoGerado.append("           } catch (Exception ex) {\n");

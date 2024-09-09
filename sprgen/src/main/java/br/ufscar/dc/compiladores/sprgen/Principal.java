@@ -42,7 +42,7 @@ public class Principal {
 
         try {
 
-            
+
             // Análise sintática
             SPRGENParser.ProgramaContext programaContext = parser.programa();
 
@@ -78,28 +78,28 @@ public class Principal {
 
                 // Verificar se o código gerado não está vazio
                 String codigoGerado = sprgenGenerator.codigoGerado.toString();
-                
+
                 if (codigoGerado.isEmpty()) {
                     System.out.println("Erro: O código gerado está vazio.");
                 } else {
                     // Gerar o arquivo .java no caminho especificado
-                    PrintWriter writer = new PrintWriter(generatedJavaCodePath+"/SprGeneratedApi.java");
+                    PrintWriter writer = new PrintWriter(generatedJavaCodePath + "/SprGeneratedApi.java");
                     writer.println(codigoGerado);
 
                     PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString());
                     writerOutFile.println(codigoGerado);
                     writerOutFile.close();
-                                        
+
                     //System.out.println("Código Java gerado com sucesso.");
 
                     writer.close();
-                   
+
                 }
             }
         } catch (ParseCancellationException er) {
             // Verificação de erros sintáticos
             if (!ValidateErrorHelper.errosSintaticos.isEmpty()) {
-                try (PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString())) {   
+                try (PrintWriter writerOutFile = new PrintWriter(outputOutPath.toString())) {
                     ValidateErrorHelper.errosSintaticos.forEach(e -> writerOutFile.println(e));
                     writerOutFile.println("Compilacao interrompida.");
                     System.out.println("Compilação interrompida devido a erros sintáticos.");

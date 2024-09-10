@@ -1,5 +1,7 @@
 # SPRGEN (Spring Generator)
 
+[**_LINK PARA PLAYLIST NO YOUTUBE_**](https://www.youtube.com/playlist?list=PL46dB6AdTBo95ZjuY1zxC6y39BjkZnYJt) 
+
 ![img.png](img.png)
 
 ## Introdução e Descrição do Projeto

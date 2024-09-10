@@ -2,7 +2,9 @@ package br.ufscar.dc.compiladores.sprgen;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
     Map<String, Entidade> entidades;
@@ -187,45 +189,34 @@ public class SPRGENGenerator extends SPRGENBaseVisitor<Void> {
         codigoGerado.append("        }\n\n");
     }
 
+    private void generatePutCodeCustom(String id) {
+
+    }
+
     private void generatePutCode(String id) {
         String repositoryInstance = buildEntityRepositoryInstance(id);
         codigoGerado.append("        @PutMapping(\"/{id}\")\n");
         codigoGerado.append("        public ResponseEntity<").append(id).append("> update(@PathVariable Long id, @RequestBody ").append(id).append(" ").append(id.toLowerCase()).append(") {\n");
-
-        codigoGerado.append("        Optional<").append(id).append("> optional").append(id).append(" = ").append(repositoryInstance).append(".findById(id);\n");
-
-        codigoGerado.append("        if (optional").append(id).append(".isPresent()){\n");
-
-        codigoGerado.append("           ").append(id).append(" ").append(id.toLowerCase()).append("Existente = optional").append(id).append(".get();\n");
         codigoGerado.append("           try {\n");
+        codigoGerado.append("                Optional<").append(id).append("> optional").append(id).append(" = ").append(repositoryInstance).append(".findById(id);\n");
+        codigoGerado.append("                " + id + " opEntidade = optional"+id+".get();\n");
+        
+        List<Campo> campos = entidades.get(id).campos();
+        for (Campo campo : campos) {
+           codigoGerado.append("                if (" + id.toLowerCase() + "." + campo.nome + " != null) {\n");
+           codigoGerado.append("                    opEntidade." + campo.nome + " = " + id.toLowerCase() + "." + campo.nome + ";\n");
+           codigoGerado.append("                }\n");
+        }
+        // save entity
+        codigoGerado.append("                ").append(repositoryInstance).append(".save(").append("opEntidade);\n");
 
-        codigoGerado.append("               HashMap<String, Object> atributosValores = new HashMap<>();\n");
-        codigoGerado.append("               Field[] fields = ").append(id.toLowerCase()).append(".getClass().getDeclaredFields();\n");
-        codigoGerado.append("                   for (Field field : fields) {\n");
-        codigoGerado.append("                   field.setAccessible(true);\n");
-        codigoGerado.append("                   if (field.get(").append(id.toLowerCase()).append(") != null) {\n");
-        codigoGerado.append("                       atributosValores.put(field.getName(), field.get(").append(id.toLowerCase()).append("));\n");
-        codigoGerado.append("                       }\n");
-        codigoGerado.append("                   }\n\n");
-
-        codigoGerado.append("                   ").append(id.toLowerCase()).append("Existente.setDataAlteracao(LocalDateTime.now());\n\n");
-
-        codigoGerado.append("                   for (Map.Entry<String, Object> entry : atributosValores.entrySet()) {\n");
-        codigoGerado.append("                       Field field = ").append(id.toLowerCase()).append("Existente.getClass().getDeclaredField(entry.getKey());\n");
-        codigoGerado.append("                       field.setAccessible(true);\n");
-        codigoGerado.append("                       field.set(").append(id.toLowerCase()).append("Existente, entry.getValue());\n");
-        codigoGerado.append("                       }\n");
-
-        codigoGerado.append("                       ").append(repositoryInstance).append(".save(").append(id.toLowerCase()).append("Existente);\n");
-
-        codigoGerado.append("                       return ResponseEntity.ok().build();\n");
-
+        codigoGerado.append("                return ResponseEntity.ok().build();\n");
+        codigoGerado.append("           } catch (NoSuchElementException e)  {\n");
+        codigoGerado.append("               return new ResponseEntity<>(HttpStatus.NO_CONTENT);\n");
         codigoGerado.append("           } catch (Exception ex) {\n");
         codigoGerado.append("               ex.printStackTrace();\n");
         codigoGerado.append("               return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);\n");
         codigoGerado.append("           }\n");
-        codigoGerado.append("        }\n\n");
-        codigoGerado.append("        return new ResponseEntity<>(HttpStatus.NO_CONTENT);\n");
         codigoGerado.append("        }\n\n");
     }
 
